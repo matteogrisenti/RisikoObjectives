@@ -28,7 +28,7 @@ export function getTankSvg(hexColor: string): string {
 }
 
 /**
- * Icona stilizzata del cannone (ispirata alle carte classiche Editrice Giochi).
+ * Icona stilizzata del cannone per il dorso del mazzo.
  */
 export function getCannonLineArtSvg(): string {
   return `

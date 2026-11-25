@@ -57,7 +57,7 @@ export function renderObjectiveCardHtml(
   return `
     <article class="objective-card">
       <div class="obj-card-header">
-        <span class="obj-wordmark">RisiKo!</span>
+        <span class="obj-wordmark">RisikoObjective</span>
         <span class="obj-category">${escapeHtml(objective.categoryLabel)}</span>
       </div>
       <div class="obj-visual">

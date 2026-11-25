@@ -1,8 +1,8 @@
 {
-  "name": "risiko-classic-objectives",
-  "version": "1.0.0",
+  "name": "risiko-objective",
+  "version": "0.1.0",
   "private": true,
-  "description": "Gestore modulare degli obiettivi classici del RisiKo! (14 carte ufficiali)",
+  "description": "Gestore modulare per l'estrazione degli obiettivi classici (14 carte tradizionali)",
   "type": "module",
   "scripts": {
     "dev": "vite",

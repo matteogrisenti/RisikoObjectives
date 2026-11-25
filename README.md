@@ -1,6 +1,8 @@
-# RisiKo! Classico — Gestore Obiettivi
+# RisikoObjective — Gestore Obiettivi Classici
 
-Web app modulare in TypeScript + Vite per gestire il mazzo classico da **14 obiettivi segreti del RisiKo!** al tavolo.
+Web app modulare in TypeScript + Vite per gestire l'estrazione del mazzo classico da **14 obiettivi segreti** al tavolo.
+
+> Progetto amatoriale indipendente, non affiliato né associato a marchi registrati di giochi da tavolo.
 
 ## Struttura del Progetto
 
@@ -13,7 +15,7 @@ Web app modulare in TypeScript + Vite per gestire il mazzo classico da **14 obie
 │   ├── main.ts                 # Bootstrap applicativo
 │   ├── domain/                 # Logica pura di dominio (senza dipendenze DOM)
 │   │   ├── types.ts            # Modelli e interfacce TypeScript
-│   │   ├── objectives.ts       # Mazzo ufficiale da 14 carte + colori scatola
+│   │   ├── objectives.ts       # Mazzo tradizionale da 14 carte + colori scatola
 │   │   └── rules.ts            # Regola di riserva (24 territori) e distribuzione
 │   ├── state/
 │   │   └── store.ts            # Store centralizzato con persistenza localStorage

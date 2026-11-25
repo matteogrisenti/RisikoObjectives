@@ -10,7 +10,7 @@ import type {
 } from './types.ts';
 
 /**
- * Risolve l'obiettivo effettivo secondo la regola classica di riserva del RisiKo!.
+ * Risolve l'obiettivo effettivo secondo la regola classica di riserva.
  */
 export function resolveEffectiveObjective(
   objective: ObjectiveCard,

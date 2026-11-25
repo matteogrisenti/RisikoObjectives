@@ -1,11 +1,11 @@
 /* ==========================================================================
-   RisiKo! Classico (Editrice Giochi) — Light & Simple Printed Design System
-   Palette estratta direttamente dalla scatola, plancia e carte classiche:
+   RisikoObjective — Light & Simple Printed Board-Game Design System
+   Palette ispirata alle plance e carte strategiche classiche:
    - Carta / Sfondo chiaro: #FAF8F2 & #FFFFFF
    - Inchiostro nero bordi:  #141414
-   - Rosso RisiKo!:         #C82027
+   - Rosso titolo:          #C82027
    - Oliva plancia:         #9D9B29
-   - Giallo-oliva scatola:  #D6CF3E
+   - Giallo-oliva riquadri: #D6CF3E
    ========================================================================== */
 
 :root {
@@ -63,7 +63,7 @@ body {
   display: none !important;
 }
 
-/* Top Header — Ispirato alla fascia bianca e ai riquadri oliva/gialli della scatola RisiKo! */
+/* Top Header — Fascia bianca e riquadri oliva/gialli */
 .app-header {
   position: sticky;
   top: 0;
@@ -117,7 +117,7 @@ body {
 
 .logo-wordmark {
   font-family: 'Archivo Black', Impact, 'Arial Black', sans-serif;
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--risiko-red);
@@ -125,7 +125,7 @@ body {
 }
 
 .logo-wordmark-sm {
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 
 h1, h2, h3 {
@@ -637,7 +637,7 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
-   Carta Obiettivo Classica Editrice Giochi
+   Carta Obiettivo Classica
    ========================================================================== */
 .objective-card-wrapper {
   width: 100%;
@@ -671,7 +671,7 @@ h1, h2, h3 {
 
 .obj-wordmark {
   font-family: 'Archivo Black', Impact, sans-serif;
-  font-size: 1rem;
+  font-size: 0.92rem;
   color: var(--risiko-red);
   line-height: 1;
 }
@@ -1088,6 +1088,19 @@ h1, h2, h3 {
   font-size: 0.88rem;
   font-weight: 600;
   padding: 6px 8px;
+}
+
+.app-footer {
+  border-top: 1.5px solid var(--border-soft);
+  padding: 18px 0 28px;
+  text-align: center;
+}
+
+.app-footer p {
+  margin: 0 auto;
+  max-width: 68ch;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

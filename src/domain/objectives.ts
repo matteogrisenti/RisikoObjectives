@@ -33,7 +33,7 @@ export const COLOR_PRESET_PALETTE: readonly ColorPreset[] = [
   { name: 'Grigio', adjective: 'Grigie', hex: '#747B82' }
 ];
 
-// Colori dei continenti ispirati alla plancia classica Editrice Giochi
+// Colori dei continenti ispirati alla plancia strategica classica
 export const CONTINENT_META: Record<ContinentId, ContinentMeta> = {
   na: { name: 'Nord America', bonus: '+5', color: '#E2A265' },
   sa: { name: 'Sud America', bonus: '+2', color: '#7BB8CF' },
