@@ -2,33 +2,58 @@
 node_modules/
 .pnp
 .pnp.*
+*.tgz
 
 # Build, cache e output test
 dist/
 dist-ssr/
 coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+junit.xml
 *.tsbuildinfo
 .vite/
 .cache/
 .eslintcache
 
-# Dati sensibili, variabili d'ambiente e certificati
+# Dati sensibili, variabili d'ambiente, token e certificati
 .env
 .env.*
 !.env.example
+.npmrc
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
+*.jks
+*.keystore
+*.secret
+*.secrets
+*credentials*.json
+service-account*.json
 secrets/
 .secrets/
+
+# Hosting / cloud CLI locali
+.firebase/
+.firebaserc
+firebase-debug.log*
+firestore-debug.log*
+.vercel/
+.netlify/
+.wrangler/
 
 # Utility AI / agenti locali
 .agents/
 .claude/
 .cursor/
 .gemini/
+.windsurf/
+.codex/
+.opencode/
 skills-lock.json
 
 # Log e file temporanei
@@ -39,6 +64,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.local
+tmp/
+temp/
 
 # Editor e sistema operativo
 .vscode/
