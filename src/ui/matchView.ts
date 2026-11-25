@@ -2,7 +2,7 @@ import { resolveEffectiveObjective } from '../domain/rules.ts';
 import { getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
 import { renderObjectiveCardHtml } from './cardRenderer.ts';
-import { escapeHtml, getRequiredElement, getTankSvg } from './icons.ts';
+import { escapeHtml, getRequiredElement, getTankSvg, sanitizeHex } from './icons.ts';
 import type { ModalController } from './modals.ts';
 
 export class MatchView {
@@ -118,7 +118,7 @@ export class MatchView {
       card.innerHTML = `
         <div class="player-card-top">
           <div class="player-identity">
-            <div class="army-chip" style="background:${color.hex}">
+            <div class="army-chip" style="background:${sanitizeHex(color.hex)}">
               ${getTankSvg(color.hex)}
             </div>
             <div>
@@ -158,7 +158,7 @@ export class MatchView {
         wrapper.className = 'reveal-all-item';
         wrapper.innerHTML = `
           <div class="reveal-all-owner">
-            <span class="color-dot" style="background:${color.hex}"></span>
+            <span class="color-dot" style="background:${sanitizeHex(color.hex)}"></span>
             <span>${escapeHtml(player.name)} (${escapeHtml(color.name)})</span>
           </div>
           ${renderObjectiveCardHtml(player.objective, fallbackInfo, state.lang, state.armyColors)}

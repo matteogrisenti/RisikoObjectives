@@ -3,7 +3,7 @@ import { resolveEffectiveObjective } from '../domain/rules.ts';
 import { getLocalizedColor, getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
 import { renderObjectiveCardHtml } from './cardRenderer.ts';
-import { escapeHtml, getRequiredElement } from './icons.ts';
+import { escapeHtml, getRequiredElement, sanitizeHex } from './icons.ts';
 
 export class ModalController {
   private activeModalPlayerIndex: number | null = null;
@@ -143,7 +143,7 @@ export class ModalController {
 
     this.modalPlayerTitle.textContent = player.name;
     this.modalPlayerColorPill.innerHTML = `
-      <span class="color-dot" style="background:${color.hex}"></span>
+      <span class="color-dot" style="background:${sanitizeHex(color.hex)}"></span>
       <span>${escapeHtml(strings.playerArmies(color.adjective))}</span>
     `;
 
@@ -175,7 +175,7 @@ export class ModalController {
       }).join('');
 
       item.innerHTML = `
-        <span class="color-dot" style="background:${color.hex}; width:18px; height:18px;"></span>
+        <span class="color-dot" style="background:${sanitizeHex(color.hex)}; width:18px; height:18px;"></span>
         <span>${escapeHtml(strings.colorSlotLabel(idx + 1))}</span>
         <select data-slot="${idx}">${options}</select>
       `;

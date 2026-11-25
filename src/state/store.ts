@@ -78,10 +78,24 @@ export class AppStore {
       }
 
       const lang: Language = parsed.lang === 'it' ? 'it' : 'en';
-      const armyColors: ArmyColor[] = parsed.armyColors.map((c) => ({
-        ...c,
-        key: resolveColorKey(c)
-      }));
+      const armyColors: ArmyColor[] = parsed.armyColors.map((c, idx) => {
+        const key = resolveColorKey(c);
+        const safeHex = /^#[0-9a-fA-F]{6}$/.test(c.hex)
+          ? c.hex
+          : DEFAULT_ARMY_COLORS[idx].hex;
+        return {
+          ...c,
+          key,
+          hex: safeHex
+        };
+      });
+
+      const playerCount =
+        typeof parsed.playerCount === 'number'
+          ? Math.max(2, Math.min(6, Math.trunc(parsed.playerCount)))
+          : 4;
+      const deckMode: DeckMode =
+        parsed.deckMode === 'active-only' ? 'active-only' : 'classic';
 
       const quickDeck =
         parsed.quickDeck && Array.isArray(parsed.quickDeck.cards)
@@ -95,9 +109,11 @@ export class AppStore {
       return {
         lang,
         armyColors,
-        playerCount: parsed.playerCount ?? 4,
-        deckMode: parsed.deckMode ?? 'classic',
-        setupPlayers: parsed.setupPlayers ?? this.createInitialState().setupPlayers,
+        playerCount,
+        deckMode,
+        setupPlayers: Array.isArray(parsed.setupPlayers)
+          ? parsed.setupPlayers
+          : this.createInitialState().setupPlayers,
         activeMatch: parsed.activeMatch ?? null,
         quickDeck
       };

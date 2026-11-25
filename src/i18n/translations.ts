@@ -235,7 +235,7 @@ export const UI_STRINGS = {
     fallbackEliminatedColor: (adj: string, name: string) =>
       `${adj} armies (${name}) are already eliminated: unless you dealt the final blow, your objective becomes conquering 24 territories.`,
     footerDisclaimer:
-      'RisikoObjective is an independent hobby project for drawing classic tabletop objectives. Not affiliated with or endorsed by any registered trademark.'
+      'RisikoObjective is an independent hobby project for drawing classic tabletop objectives. No cookies, no analytics, no external tracking. Not affiliated with any registered trademark.'
   },
   it: {
     docTitle: 'RisikoObjective — Gestore Obiettivi Classici',
@@ -335,7 +335,7 @@ export const UI_STRINGS = {
     fallbackEliminatedColor: (adj: string, name: string) =>
       `Le armate ${adj.toLowerCase()} (${name}) risultano già eliminate: se non sei stato tu a darle il colpo di grazia, il tuo obiettivo diventa conquistare 24 territori.`,
     footerDisclaimer:
-      "RisikoObjective è un progetto amatoriale indipendente per l'estrazione di obiettivi classici da tavolo. Non è affiliato né associato a marchi registrati."
+      "RisikoObjective è un progetto amatoriale indipendente per l'estrazione di obiettivi classici da tavolo. Nessun cookie, nessuna statistica, nessun tracciamento esterno. Non è affiliato ad alcun marchio registrato."
   }
 } as const;
 

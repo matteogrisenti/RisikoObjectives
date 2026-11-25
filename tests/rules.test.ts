@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULT_ARMY_COLORS, buildClassicDeck } from '../src/domain/objectives.ts';
 import { dealMatchObjectives, resolveEffectiveObjective } from '../src/domain/rules.ts';
 import { isDefaultPlayerName } from '../src/i18n/translations.ts';
+import { escapeHtml, sanitizeHex } from '../src/ui/icons.ts';
 
 describe('resolveEffectiveObjective', () => {
   const deck = buildClassicDeck(DEFAULT_ARMY_COLORS, 'en');
@@ -130,5 +131,19 @@ describe('i18n helpers', () => {
     expect(isDefaultPlayerName('Giocatore 1', 0)).toBe(true);
     expect(isDefaultPlayerName('', 0)).toBe(true);
     expect(isDefaultPlayerName('Marco', 0)).toBe(false);
+  });
+});
+
+describe('security helpers', () => {
+  it('escapes HTML special characters including single and double quotes', () => {
+    expect(escapeHtml('<script>"alert(\'xss\')"</script>')).toBe(
+      '&lt;script&gt;&quot;alert(&#39;xss&#39;)&quot;&lt;/script&gt;'
+    );
+  });
+
+  it('sanitizes hex colors and rejects invalid CSS payloads', () => {
+    expect(sanitizeHex('#C82027')).toBe('#C82027');
+    expect(sanitizeHex('red; background: url(https://evil.test)')).toBe('#222426');
+    expect(sanitizeHex('invalid', '#000000')).toBe('#000000');
   });
 });

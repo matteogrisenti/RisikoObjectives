@@ -1,7 +1,7 @@
 import type { DeckMode } from '../domain/types.ts';
 import { getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
-import { escapeHtml, getRequiredElement } from './icons.ts';
+import { escapeHtml, getRequiredElement, sanitizeHex } from './icons.ts';
 import type { ModalController } from './modals.ts';
 
 export class SetupView {
@@ -83,7 +83,7 @@ export class SetupView {
           aria-label="${escapeHtml(strings.playerNameAria(idx + 1))}"
         >
         <div class="color-select-wrap">
-          <span class="color-dot" style="background:${currentColor.hex}"></span>
+          <span class="color-dot" style="background:${sanitizeHex(currentColor.hex)}"></span>
           <select class="color-select" aria-label="${escapeHtml(strings.playerColorAria(idx + 1))}">
             ${optionsHtml}
           </select>

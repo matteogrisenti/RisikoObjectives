@@ -1,22 +1,31 @@
 export function escapeHtml(text: string): string {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
+export function sanitizeHex(hex: string, fallback = '#222426'): string {
+  return HEX_COLOR_RE.test(hex) ? hex : fallback;
 }
 
 export function isLightHex(hex: string): boolean {
-  const clean = (hex || '#000000').replace('#', '');
-  if (clean.length !== 6) return false;
-  const r = parseInt(clean.slice(0, 2), 16);
-  const g = parseInt(clean.slice(2, 4), 16);
-  const b = parseInt(clean.slice(4, 6), 16);
+  const safe = sanitizeHex(hex, '#000000').slice(1);
+  const r = parseInt(safe.slice(0, 2), 16);
+  const g = parseInt(safe.slice(2, 4), 16);
+  const b = parseInt(safe.slice(4, 6), 16);
   return (r * 299 + g * 587 + b * 114) / 1000 > 170;
 }
 
 export function getTankSvg(hexColor: string): string {
-  const strokeColor = isLightHex(hexColor) ? '#141414' : '#ffffff';
+  const safeHex = sanitizeHex(hexColor);
+  const strokeColor = isLightHex(safeHex) ? '#141414' : '#ffffff';
   return `
-    <svg viewBox="0 0 24 24" fill="${hexColor}" stroke="${strokeColor}" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="${safeHex}" stroke="${strokeColor}" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
       <path d="M4 14h16l1 4H3l1-4z"/>
       <path d="M7 10h7l2 4H6l1-4z"/>
       <path d="M14 11.5h7"/>

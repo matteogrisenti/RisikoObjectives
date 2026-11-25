@@ -6,7 +6,7 @@ import {
   getLocalizedContinentName,
   getStrings
 } from '../i18n/translations.ts';
-import { escapeHtml, getTankSvg, isLightHex } from './icons.ts';
+import { escapeHtml, getTankSvg, isLightHex, sanitizeHex } from './icons.ts';
 
 export function renderObjectiveCardHtml(
   objective: ObjectiveCard,
@@ -48,9 +48,10 @@ export function renderObjectiveCardHtml(
 
     const pills = objective.continents.map((cKey) => {
       const meta = CONTINENT_META[cKey];
-      const textColor = isLightHex(meta.color) ? '#141414' : '#ffffff';
+      const safeBg = sanitizeHex(meta.color);
+      const textColor = isLightHex(safeBg) ? '#141414' : '#ffffff';
       const continentName = getLocalizedContinentName(cKey, lang);
-      return `<span class="continent-pill" style="background:${meta.color}; color:${textColor}">${escapeHtml(continentName)}</span>`;
+      return `<span class="continent-pill" style="background:${safeBg}; color:${textColor}">${escapeHtml(continentName)}</span>`;
     });
     if (objective.extraContinent) {
       pills.push(`<span class="continent-pill is-any">${escapeHtml(strings.cardThirdContinent)}</span>`);
@@ -73,10 +74,11 @@ export function renderObjectiveCardHtml(
     cardText = strings.cardDestroyText(localizedColor.adjective);
     cardNote = strings.cardDestroyNote;
 
+    const safeTargetHex = sanitizeHex(objective.targetColorHex);
     visualHtml = `
       <div class="destroy-visual">
-        <div class="destroy-tank-badge" style="background:${objective.targetColorHex}">
-          ${getTankSvg(objective.targetColorHex)}
+        <div class="destroy-tank-badge" style="background:${safeTargetHex}">
+          ${getTankSvg(safeTargetHex)}
         </div>
         <div class="destroy-label">${escapeHtml(strings.cardDestroyLabel(localizedColor.adjective))}</div>
       </div>
