@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RisiKo! — Gestore Obiettivi Classici</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="box-strip" aria-hidden="true">
+      <span class="strip-tile tile-olive"></span>
+      <span class="strip-tile tile-citron"></span>
+      <span class="strip-tile tile-olive"></span>
+      <span class="strip-tile tile-citron"></span>
+      <span class="strip-tile tile-olive"></span>
+      <span class="strip-tile tile-citron"></span>
+    </div>
+    <div class="container header-inner">
+      <div class="brand">
+        <div class="logo-plate">
+          <span class="logo-wordmark">RisiKo!</span>
+        </div>
+        <div class="brand-copy">
+          <h1 class="brand-title">Obiettivi classici</h1>
+          <p class="subtitle">Mazzo ufficiale da 14 carte</p>
+        </div>
+      </div>
+
+      <nav class="mode-tabs" aria-label="Modalità di gioco">
+        <button type="button" class="tab-btn active" data-tab="match">Partita al tavolo</button>
+        <button type="button" class="tab-btn" data-tab="quick">Mazzo rapido</button>
+        <button type="button" class="tab-btn" data-tab="catalog">Le 14 carte</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <!-- TAB 1: PARTITA AL TAVOLO -->
+    <section id="tab-match" class="tab-panel active">
+      <div id="setup-view" class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Configura la partita</h2>
+            <p class="muted">Scegli i giocatori e i colori delle armate, poi distribuisci gli obiettivi segreti.</p>
+          </div>
+          <button type="button" id="btn-open-colors" class="btn btn-ghost btn-sm" title="Personalizza i colori se la tua scatola ha armate diverse">
+            Personalizza colori
+          </button>
+        </div>
+
+        <div class="setup-block">
+          <label class="field-label">Numero di giocatori</label>
+          <div class="player-count-pills" id="player-count-pills">
+            <button type="button" class="pill-btn" data-count="2">2</button>
+            <button type="button" class="pill-btn" data-count="3">3</button>
+            <button type="button" class="pill-btn active" data-count="4">4</button>
+            <button type="button" class="pill-btn" data-count="5">5</button>
+            <button type="button" class="pill-btn" data-count="6">6</button>
+          </div>
+        </div>
+
+        <div class="setup-block">
+          <label class="field-label">Giocatori e colori delle armate</label>
+          <div id="players-setup-list" class="players-setup-list"></div>
+        </div>
+
+        <div class="setup-block">
+          <label class="field-label">Gestione dei colori assenti</label>
+          <div class="rule-options">
+            <label class="radio-card">
+              <input type="radio" name="deckMode" value="classic" checked>
+              <div>
+                <strong>Regola classica (14 carte)</strong>
+                <span>Tutte le 14 carte restano nel mazzo. Se peschi il tuo colore o un colore assente, l'obiettivo diventa 24 territori.</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="deckMode" value="active-only">
+              <div>
+                <strong>Solo colori in partita</strong>
+                <span>Esclude dal mazzo le carte di distruzione dei colori assenti. Se peschi il tuo colore, diventa 24 territori.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="setup-actions">
+          <button type="button" id="btn-start-match" class="btn btn-primary btn-lg">
+            Mescola e distribuisci
+          </button>
+        </div>
+      </div>
+
+      <div id="active-match-view" class="hidden">
+        <div class="match-toolbar card-panel">
+          <div class="match-status-info">
+            <span class="status-badge" id="match-rule-badge">Regola classica (14 carte)</span>
+            <p class="muted" id="match-progress-text">0 di 4 giocatori hanno visto l'obiettivo</p>
+          </div>
+          <div class="toolbar-actions">
+            <button type="button" id="btn-reveal-all" class="btn btn-secondary">Rivela tutti</button>
+            <button type="button" id="btn-rematch" class="btn btn-ghost">Nuova estrazione</button>
+            <button type="button" id="btn-reset-setup" class="btn btn-ghost">Cambia giocatori</button>
+          </div>
+        </div>
+
+        <div class="helper-banner">
+          Passa il dispositivo a turno: ogni giocatore tocca il proprio nome per vedere in segreto il proprio obiettivo.
+        </div>
+
+        <div id="match-players-grid" class="players-grid"></div>
+
+        <div id="reveal-all-section" class="reveal-all-section hidden">
+          <div class="panel-header">
+            <div>
+              <h2>Obiettivi rivelati</h2>
+              <p class="muted">Riepilogo di fine partita per controllare il vincitore.</p>
+            </div>
+            <button type="button" id="btn-hide-all" class="btn btn-ghost btn-sm">Nascondi riepilogo</button>
+          </div>
+          <div id="reveal-all-grid" class="reveal-all-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MAZZO RAPIDO -->
+    <section id="tab-quick" class="tab-panel">
+      <div class="card-panel quick-deck-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Mazzo rapido</h2>
+            <p class="muted">Pesca una carta alla volta dal mazzo mescolato e passa il dispositivo.</p>
+          </div>
+          <button type="button" id="btn-quick-shuffle" class="btn btn-ghost">Rimescola mazzo</button>
+        </div>
+
+        <div class="quick-status">
+          <div class="deck-counter">
+            <span class="counter-num" id="quick-remaining">14</span>
+            <span class="counter-label">carte rimaste</span>
+          </div>
+          <div class="quick-drawn-info" id="quick-drawn-info">Nessuna carta pescata.</div>
+        </div>
+
+        <div class="quick-stage" id="quick-stage">
+          <div class="card-back-preview" id="quick-card-back">
+            <div class="card-back-header">
+              <span class="logo-wordmark logo-wordmark-sm">RisiKo!</span>
+              <span class="card-back-sub">Obiettivi</span>
+            </div>
+            <div class="card-back-tiles">
+              <div class="card-back-tile tile-citron" id="quick-back-art-left"></div>
+              <div class="card-back-tile tile-olive" id="quick-back-art-right"></div>
+            </div>
+            <p id="quick-back-hint" class="card-back-hint">Tocca il pulsante per pescare la prossima carta segreta.</p>
+            <button type="button" id="btn-quick-draw" class="btn btn-primary btn-lg">Pesca obiettivo</button>
+          </div>
+
+          <div id="quick-card-revealed" class="hidden">
+            <div id="quick-card-slot" class="objective-card-wrapper"></div>
+            <div class="quick-reveal-actions">
+              <button type="button" id="btn-quick-hide" class="btn btn-primary btn-lg">Nascondi e passa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CATALOGO 14 CARTE -->
+    <section id="tab-catalog" class="tab-panel">
+      <div class="card-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Le 14 carte ufficiali</h2>
+            <p class="muted">Elenco completo degli obiettivi segreti del RisiKo! classico Editrice Giochi.</p>
+          </div>
+        </div>
+
+        <div class="rules-box">
+          <h3>Regola di riserva</h3>
+          <p>Se peschi l'obiettivo di <strong>distruggere le tue stesse armate</strong>, un colore <strong>non presente in partita</strong>, oppure un'armata eliminata da un altro giocatore, il tuo obiettivo diventa automaticamente <strong>conquistare 24 territori</strong>.</p>
+        </div>
+
+        <div id="catalog-grid" class="catalog-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: PRIVACY SHIELD & OBJECTIVE REVEAL -->
+  <div id="objective-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-player-title">
+    <div class="modal-dialog">
+      <button type="button" id="modal-close-x" class="modal-close-x" aria-label="Chiudi">&times;</button>
+
+      <div id="modal-shield-step" class="modal-step">
+        <div class="shield-badge" aria-hidden="true">Riservato</div>
+        <p class="shield-kicker">Passa lo schermo a</p>
+        <h2 id="modal-player-title" class="shield-player-name">Giocatore</h2>
+        <div id="modal-player-color-pill" class="player-color-pill"></div>
+        <p class="shield-warning">Assicurati che nessun altro stia guardando prima di aprire la carta.</p>
+        <div class="modal-actions">
+          <button type="button" id="btn-reveal-card" class="btn btn-primary btn-lg">Mostra il mio obiettivo</button>
+          <button type="button" id="btn-cancel-shield" class="btn btn-ghost">Annulla</button>
+        </div>
+      </div>
+
+      <div id="modal-card-step" class="modal-step hidden">
+        <div class="modal-player-banner">
+          <span>Obiettivo di</span>
+          <strong id="modal-card-owner">Giocatore</strong>
+        </div>
+        <div id="modal-card-slot" class="objective-card-wrapper"></div>
+        <div class="modal-actions">
+          <button type="button" id="btn-hide-card" class="btn btn-primary btn-lg">Nascondi e chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PERSONALIZZA COLORI SCATOLA -->
+  <div id="colors-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="colors-modal-title">
+    <div class="modal-dialog modal-dialog-wide">
+      <button type="button" id="colors-close-x" class="modal-close-x" aria-label="Chiudi">&times;</button>
+      <h2 id="colors-modal-title">Colori delle armate</h2>
+      <p class="muted">I colori classici sono Rosso, Blu, Giallo, Nero, Verde e Viola. Se la tua edizione usa colori diversi, puoi cambiarli qui.</p>
+
+      <div id="colors-editor-list" class="colors-editor-list"></div>
+
+      <div class="modal-actions modal-actions-row">
+        <button type="button" id="btn-reset-colors" class="btn btn-ghost">Ripristina classici</button>
+        <button type="button" id="btn-save-colors" class="btn btn-primary">Salva colori</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFERMA AZIONE -->
+  <div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-dialog">
+      <h2 id="confirm-title">Conferma</h2>
+      <p id="confirm-message" class="muted"></p>
+      <div class="modal-actions modal-actions-row">
+        <button type="button" id="btn-confirm-cancel" class="btn btn-ghost">Annulla</button>
+        <button type="button" id="btn-confirm-ok" class="btn btn-primary">Conferma</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
