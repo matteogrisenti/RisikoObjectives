@@ -1,15 +1,33 @@
+export type Language = 'en' | 'it';
+
 export type ContinentId = 'na' | 'sa' | 'eu' | 'af' | 'as' | 'oc';
 
 export type DeckMode = 'classic' | 'active-only';
 
+export type ColorKey =
+  | 'red'
+  | 'blue'
+  | 'yellow'
+  | 'black'
+  | 'green'
+  | 'purple'
+  | 'orange'
+  | 'white'
+  | 'cyan'
+  | 'pink'
+  | 'brown'
+  | 'gray';
+
 export interface ArmyColor {
   id: string;
+  key: ColorKey;
   name: string;
   adjective: string;
   hex: string;
 }
 
 export interface ColorPreset {
+  key: ColorKey;
   name: string;
   adjective: string;
   hex: string;
@@ -51,6 +69,7 @@ export interface DestroyObjective {
   text: string;
   note: string;
   targetColorId: string;
+  targetColorKey?: ColorKey;
   targetColorName: string;
   targetColorAdjective: string;
   targetColorHex: string;
@@ -85,6 +104,7 @@ export interface QuickDeckState {
 }
 
 export interface AppState {
+  lang: Language;
   armyColors: ArmyColor[];
   playerCount: number;
   deckMode: DeckMode;

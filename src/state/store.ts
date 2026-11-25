@@ -1,17 +1,24 @@
-import { DEFAULT_ARMY_COLORS, buildClassicDeck, shuffleArray } from '../domain/objectives.ts';
+import {
+  DEFAULT_ARMY_COLORS,
+  buildClassicDeck,
+  resolveColorKey,
+  shuffleArray
+} from '../domain/objectives.ts';
 import { dealMatchObjectives } from '../domain/rules.ts';
-import type { AppState, ArmyColor, DeckMode, SetupPlayer } from '../domain/types.ts';
+import type {
+  AppState,
+  ArmyColor,
+  DeckMode,
+  Language,
+  SetupPlayer
+} from '../domain/types.ts';
+import {
+  getLocalizedColor,
+  getStrings,
+  isDefaultPlayerName
+} from '../i18n/translations.ts';
 
 const STORAGE_KEY = 'risiko_classic_state_v1';
-
-const DEFAULT_NAMES = [
-  'Giocatore 1',
-  'Giocatore 2',
-  'Giocatore 3',
-  'Giocatore 4',
-  'Giocatore 5',
-  'Giocatore 6'
-];
 
 export type Listener = (state: AppState) => void;
 
@@ -38,20 +45,23 @@ export class AppStore {
   }
 
   private createInitialState(): AppState {
+    const lang: Language = 'en';
+    const strings = getStrings(lang);
     const armyColors = DEFAULT_ARMY_COLORS.map((c) => ({ ...c }));
-    const setupPlayers: SetupPlayer[] = DEFAULT_NAMES.slice(0, 4).map((name, idx) => ({
-      name,
+    const setupPlayers: SetupPlayer[] = [0, 1, 2, 3].map((idx) => ({
+      name: strings.playerDefaultName(idx + 1),
       colorId: armyColors[idx].id
     }));
 
     return {
+      lang,
       armyColors,
       playerCount: 4,
       deckMode: 'classic',
       setupPlayers,
       activeMatch: null,
       quickDeck: {
-        cards: shuffleArray(buildClassicDeck(armyColors)),
+        cards: shuffleArray(buildClassicDeck(armyColors, lang)),
         drawnCount: 0,
         currentCard: null
       }
@@ -66,14 +76,31 @@ export class AppStore {
       if (!parsed || !Array.isArray(parsed.armyColors) || parsed.armyColors.length !== 6) {
         return this.createInitialState();
       }
-      if (!parsed.quickDeck || !Array.isArray(parsed.quickDeck.cards)) {
-        parsed.quickDeck = {
-          cards: shuffleArray(buildClassicDeck(parsed.armyColors)),
-          drawnCount: 0,
-          currentCard: null
-        };
-      }
-      return parsed as AppState;
+
+      const lang: Language = parsed.lang === 'it' ? 'it' : 'en';
+      const armyColors: ArmyColor[] = parsed.armyColors.map((c) => ({
+        ...c,
+        key: resolveColorKey(c)
+      }));
+
+      const quickDeck =
+        parsed.quickDeck && Array.isArray(parsed.quickDeck.cards)
+          ? parsed.quickDeck
+          : {
+              cards: shuffleArray(buildClassicDeck(armyColors, lang)),
+              drawnCount: 0,
+              currentCard: null
+            };
+
+      return {
+        lang,
+        armyColors,
+        playerCount: parsed.playerCount ?? 4,
+        deckMode: parsed.deckMode ?? 'classic',
+        setupPlayers: parsed.setupPlayers ?? this.createInitialState().setupPlayers,
+        activeMatch: parsed.activeMatch ?? null,
+        quickDeck
+      };
     } catch {
       return this.createInitialState();
     }
@@ -91,8 +118,43 @@ export class AppStore {
     return this.state.armyColors.find((c) => c.id === colorId) ?? this.state.armyColors[0];
   }
 
+  getLocalizedArmyColor(colorId: string): ArmyColor {
+    const color = this.getColorById(colorId);
+    const key = resolveColorKey(color);
+    const localized = getLocalizedColor(key, this.state.lang);
+    return {
+      ...color,
+      key,
+      name: localized.name,
+      adjective: localized.adjective
+    };
+  }
+
+  setLanguage(lang: Language): void {
+    if (this.state.lang === lang) return;
+    this.state.lang = lang;
+    const strings = getStrings(lang);
+
+    this.state.setupPlayers.forEach((p, idx) => {
+      if (isDefaultPlayerName(p.name, idx)) {
+        p.name = strings.playerDefaultName(idx + 1);
+      }
+    });
+
+    if (this.state.activeMatch) {
+      this.state.activeMatch.players.forEach((p, idx) => {
+        if (isDefaultPlayerName(p.name, idx)) {
+          p.name = strings.playerDefaultName(idx + 1);
+        }
+      });
+    }
+
+    this.notify();
+  }
+
   setPlayerCount(count: number): void {
     const clamped = Math.max(2, Math.min(6, count));
+    const strings = getStrings(this.state.lang);
     this.state.playerCount = clamped;
 
     while (this.state.setupPlayers.length < clamped) {
@@ -101,7 +163,7 @@ export class AppStore {
         this.state.armyColors.find((c) => !usedIds.has(c.id)) ?? this.state.armyColors[0];
       const idx = this.state.setupPlayers.length;
       this.state.setupPlayers.push({
-        name: DEFAULT_NAMES[idx] ?? `Giocatore ${idx + 1}`,
+        name: strings.playerDefaultName(idx + 1),
         colorId: freeColor.id
       });
     }
@@ -159,7 +221,8 @@ export class AppStore {
       setupPlayers: this.state.setupPlayers,
       playerCount: this.state.playerCount,
       armyColors: this.state.armyColors,
-      deckMode: this.state.deckMode
+      deckMode: this.state.deckMode,
+      lang: this.state.lang
     });
     this.notify();
   }
@@ -191,7 +254,7 @@ export class AppStore {
 
   private resetQuickDeckInternal(): void {
     this.state.quickDeck = {
-      cards: shuffleArray(buildClassicDeck(this.state.armyColors)),
+      cards: shuffleArray(buildClassicDeck(this.state.armyColors, this.state.lang)),
       drawnCount: 0,
       currentCard: null
     };

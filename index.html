@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RisikoObjective — Gestore Obiettivi Classici</title>
+  <title>RisikoObjective — Classic Objectives Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,40 +19,56 @@
       <span class="strip-tile tile-citron"></span>
     </div>
     <div class="container header-inner">
-      <div class="brand">
-        <div class="logo-plate">
-          <span class="logo-wordmark">RisikoObjective</span>
+      <div class="header-top-row">
+        <div class="brand">
+          <div class="logo-plate">
+            <span class="logo-wordmark">RisikoObjective</span>
+          </div>
+          <div class="brand-copy">
+            <h1 class="brand-title" data-i18n="brandTitle">Classic objectives</h1>
+            <p class="subtitle" data-i18n="brandSubtitle">Traditional 14-card deck</p>
+          </div>
         </div>
-        <div class="brand-copy">
-          <h1 class="brand-title">Obiettivi classici</h1>
-          <p class="subtitle">Mazzo tradizionale da 14 carte</p>
-        </div>
+
+        <button
+          type="button"
+          id="lang-swipe-switch"
+          class="lang-swipe-switch"
+          role="switch"
+          aria-checked="false"
+          data-lang="en"
+          aria-label="Language: English (swipe or click for Italian)"
+        >
+          <span class="lang-swipe-thumb" id="lang-swipe-thumb" aria-hidden="true"></span>
+          <span class="lang-opt lang-opt-en">EN</span>
+          <span class="lang-opt lang-opt-it">IT</span>
+        </button>
       </div>
 
-      <nav class="mode-tabs" aria-label="Modalità di gioco">
-        <button type="button" class="tab-btn active" data-tab="match">Partita al tavolo</button>
-        <button type="button" class="tab-btn" data-tab="quick">Mazzo rapido</button>
-        <button type="button" class="tab-btn" data-tab="catalog">Le 14 carte</button>
+      <nav class="mode-tabs" aria-label="Game modes">
+        <button type="button" class="tab-btn active" data-tab="match" data-i18n="tabMatch">Table match</button>
+        <button type="button" class="tab-btn" data-tab="quick" data-i18n="tabQuick">Quick deck</button>
+        <button type="button" class="tab-btn" data-tab="catalog" data-i18n="tabCatalog">14 cards</button>
       </nav>
     </div>
   </header>
 
   <main class="container main-content">
-    <!-- TAB 1: PARTITA AL TAVOLO -->
+    <!-- TAB 1: TABLE MATCH -->
     <section id="tab-match" class="tab-panel active">
       <div id="setup-view" class="card-panel">
         <div class="panel-header">
           <div>
-            <h2>Configura la partita</h2>
-            <p class="muted">Scegli i giocatori e i colori delle armate, poi distribuisci gli obiettivi segreti.</p>
+            <h2 data-i18n="setupTitle">Match setup</h2>
+            <p class="muted" data-i18n="setupSubtitle">Choose players and army colors, then deal the secret objectives.</p>
           </div>
-          <button type="button" id="btn-open-colors" class="btn btn-ghost btn-sm" title="Personalizza i colori se la tua scatola ha armate diverse">
-            Personalizza colori
+          <button type="button" id="btn-open-colors" class="btn btn-ghost btn-sm" data-i18n="btnCustomizeColors">
+            Customize colors
           </button>
         </div>
 
         <div class="setup-block">
-          <label class="field-label">Numero di giocatori</label>
+          <label class="field-label" data-i18n="labelPlayerCount">Number of players</label>
           <div class="player-count-pills" id="player-count-pills">
             <button type="button" class="pill-btn" data-count="2">2</button>
             <button type="button" class="pill-btn" data-count="3">3</button>
@@ -63,33 +79,33 @@
         </div>
 
         <div class="setup-block">
-          <label class="field-label">Giocatori e colori delle armate</label>
+          <label class="field-label" data-i18n="labelPlayersAndColors">Players and army colors</label>
           <div id="players-setup-list" class="players-setup-list"></div>
         </div>
 
         <div class="setup-block">
-          <label class="field-label">Gestione dei colori assenti</label>
+          <label class="field-label" data-i18n="labelDeckRule">Missing color rule</label>
           <div class="rule-options">
             <label class="radio-card">
               <input type="radio" name="deckMode" value="classic" checked>
               <div>
-                <strong>Regola classica (14 carte)</strong>
-                <span>Tutte le 14 carte restano nel mazzo. Se peschi il tuo colore o un colore assente, l'obiettivo diventa 24 territori.</span>
+                <strong data-i18n="ruleClassicTitle">Classic rule (14 cards)</strong>
+                <span data-i18n="ruleClassicDesc">All 14 cards stay in the deck. Drawing your own or an absent color becomes 24 territories.</span>
               </div>
             </label>
             <label class="radio-card">
               <input type="radio" name="deckMode" value="active-only">
               <div>
-                <strong>Solo colori in partita</strong>
-                <span>Esclude dal mazzo le carte di distruzione dei colori assenti. Se peschi il tuo colore, diventa 24 territori.</span>
+                <strong data-i18n="ruleActiveOnlyTitle">Active colors only</strong>
+                <span data-i18n="ruleActiveOnlyDesc">Excludes destroy cards for absent colors. Drawing your own color becomes 24 territories.</span>
               </div>
             </label>
           </div>
         </div>
 
         <div class="setup-actions">
-          <button type="button" id="btn-start-match" class="btn btn-primary btn-lg">
-            Mescola e distribuisci
+          <button type="button" id="btn-start-match" class="btn btn-primary btn-lg" data-i18n="btnStartMatch">
+            Shuffle and deal
           </button>
         </div>
       </div>
@@ -97,18 +113,18 @@
       <div id="active-match-view" class="hidden">
         <div class="match-toolbar card-panel">
           <div class="match-status-info">
-            <span class="status-badge" id="match-rule-badge">Regola classica (14 carte)</span>
-            <p class="muted" id="match-progress-text">0 di 4 giocatori hanno visto l'obiettivo</p>
+            <span class="status-badge" id="match-rule-badge">Classic rule (14 cards)</span>
+            <p class="muted" id="match-progress-text">0 of 4 players viewed their objective</p>
           </div>
           <div class="toolbar-actions">
-            <button type="button" id="btn-reveal-all" class="btn btn-secondary">Rivela tutti</button>
-            <button type="button" id="btn-rematch" class="btn btn-ghost">Nuova estrazione</button>
-            <button type="button" id="btn-reset-setup" class="btn btn-ghost">Cambia giocatori</button>
+            <button type="button" id="btn-reveal-all" class="btn btn-secondary" data-i18n="btnRevealAll">Reveal all</button>
+            <button type="button" id="btn-rematch" class="btn btn-ghost" data-i18n="btnRematch">New draw</button>
+            <button type="button" id="btn-reset-setup" class="btn btn-ghost" data-i18n="btnResetSetup">Change players</button>
           </div>
         </div>
 
-        <div class="helper-banner">
-          Passa il dispositivo a turno: ogni giocatore tocca il proprio nome per vedere in segreto il proprio obiettivo.
+        <div class="helper-banner" data-i18n="matchHelperBanner">
+          Pass the device around: each player taps their name to privately view their objective.
         </div>
 
         <div id="match-players-grid" class="players-grid"></div>
@@ -116,72 +132,72 @@
         <div id="reveal-all-section" class="reveal-all-section hidden">
           <div class="panel-header">
             <div>
-              <h2>Obiettivi rivelati</h2>
-              <p class="muted">Riepilogo di fine partita per controllare il vincitore.</p>
+              <h2 data-i18n="revealAllTitle">Revealed objectives</h2>
+              <p class="muted" data-i18n="revealAllSubtitle">End-of-game summary to verify the winner.</p>
             </div>
-            <button type="button" id="btn-hide-all" class="btn btn-ghost btn-sm">Nascondi riepilogo</button>
+            <button type="button" id="btn-hide-all" class="btn btn-ghost btn-sm" data-i18n="btnHideSummary">Hide summary</button>
           </div>
           <div id="reveal-all-grid" class="reveal-all-grid"></div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 2: MAZZO RAPIDO -->
+    <!-- TAB 2: QUICK DECK -->
     <section id="tab-quick" class="tab-panel">
       <div class="card-panel quick-deck-panel">
         <div class="panel-header">
           <div>
-            <h2>Mazzo rapido</h2>
-            <p class="muted">Pesca una carta alla volta dal mazzo mescolato e passa il dispositivo.</p>
+            <h2 data-i18n="quickTitle">Quick deck</h2>
+            <p class="muted" data-i18n="quickSubtitle">Draw one card at a time from the shuffled deck and pass the device.</p>
           </div>
-          <button type="button" id="btn-quick-shuffle" class="btn btn-ghost">Rimescola mazzo</button>
+          <button type="button" id="btn-quick-shuffle" class="btn btn-ghost" data-i18n="btnReshuffle">Reshuffle deck</button>
         </div>
 
         <div class="quick-status">
           <div class="deck-counter">
             <span class="counter-num" id="quick-remaining">14</span>
-            <span class="counter-label">carte rimaste</span>
+            <span class="counter-label" data-i18n="cardsRemaining">cards left</span>
           </div>
-          <div class="quick-drawn-info" id="quick-drawn-info">Nessuna carta pescata.</div>
+          <div class="quick-drawn-info" id="quick-drawn-info">No cards drawn yet.</div>
         </div>
 
         <div class="quick-stage" id="quick-stage">
           <div class="card-back-preview" id="quick-card-back">
             <div class="card-back-header">
               <span class="logo-wordmark logo-wordmark-sm">RisikoObjective</span>
-              <span class="card-back-sub">Obiettivi</span>
+              <span class="card-back-sub" data-i18n="quickCardBackSub">Objectives</span>
             </div>
             <div class="card-back-tiles">
               <div class="card-back-tile tile-citron" id="quick-back-art-left"></div>
               <div class="card-back-tile tile-olive" id="quick-back-art-right"></div>
             </div>
-            <p id="quick-back-hint" class="card-back-hint">Tocca il pulsante per pescare la prossima carta segreta.</p>
-            <button type="button" id="btn-quick-draw" class="btn btn-primary btn-lg">Pesca obiettivo</button>
+            <p id="quick-back-hint" class="card-back-hint">Tap the button to draw the next secret card.</p>
+            <button type="button" id="btn-quick-draw" class="btn btn-primary btn-lg" data-i18n="btnQuickDraw">Draw objective</button>
           </div>
 
           <div id="quick-card-revealed" class="hidden">
             <div id="quick-card-slot" class="objective-card-wrapper"></div>
             <div class="quick-reveal-actions">
-              <button type="button" id="btn-quick-hide" class="btn btn-primary btn-lg">Nascondi e passa</button>
+              <button type="button" id="btn-quick-hide" class="btn btn-primary btn-lg" data-i18n="btnQuickHide">Hide and pass</button>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: CATALOGO 14 CARTE -->
+    <!-- TAB 3: CATALOG 14 CARDS -->
     <section id="tab-catalog" class="tab-panel">
       <div class="card-panel">
         <div class="panel-header">
           <div>
-            <h2>Le 14 carte classiche</h2>
-            <p class="muted">Elenco completo dei 14 obiettivi segreti tradizionali per partite di strategia.</p>
+            <h2 data-i18n="catalogTitle">The 14 classic cards</h2>
+            <p class="muted" data-i18n="catalogSubtitle">Complete list of the 14 traditional secret objectives for strategy games.</p>
           </div>
         </div>
 
         <div class="rules-box">
-          <h3>Regola di riserva</h3>
-          <p>Se peschi l'obiettivo di <strong>distruggere le tue stesse armate</strong>, un colore <strong>non presente in partita</strong>, oppure un'armata eliminata da un altro giocatore, il tuo obiettivo diventa automaticamente <strong>conquistare 24 territori</strong>.</p>
+          <h3 data-i18n="fallbackBoxTitle">Fallback rule</h3>
+          <p data-i18n="fallbackBoxDesc">If you draw the objective to destroy your own armies, a color not in the match, or an army eliminated by another player, your objective automatically becomes conquering 24 territories.</p>
         </div>
 
         <div id="catalog-grid" class="catalog-grid"></div>
@@ -191,64 +207,64 @@
 
   <footer class="app-footer">
     <div class="container">
-      <p>RisikoObjective è un progetto amatoriale indipendente per l'estrazione di obiettivi classici da tavolo. Non è affiliato né associato a marchi registrati.</p>
+      <p data-i18n="footerDisclaimer">RisikoObjective is an independent hobby project for drawing classic tabletop objectives. Not affiliated with or endorsed by any registered trademark.</p>
     </div>
   </footer>
 
   <!-- MODAL: PRIVACY SHIELD & OBJECTIVE REVEAL -->
   <div id="objective-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-player-title">
     <div class="modal-dialog">
-      <button type="button" id="modal-close-x" class="modal-close-x" aria-label="Chiudi">&times;</button>
+      <button type="button" id="modal-close-x" class="modal-close-x" aria-label="Close">&times;</button>
 
       <div id="modal-shield-step" class="modal-step">
-        <div class="shield-badge" aria-hidden="true">Riservato</div>
-        <p class="shield-kicker">Passa lo schermo a</p>
-        <h2 id="modal-player-title" class="shield-player-name">Giocatore</h2>
+        <div class="shield-badge" aria-hidden="true" data-i18n="shieldBadge">Private</div>
+        <p class="shield-kicker" data-i18n="shieldKicker">Pass the screen to</p>
+        <h2 id="modal-player-title" class="shield-player-name">Player</h2>
         <div id="modal-player-color-pill" class="player-color-pill"></div>
-        <p class="shield-warning">Assicurati che nessun altro stia guardando prima di aprire la carta.</p>
+        <p class="shield-warning" data-i18n="shieldWarning">Make sure nobody else is looking before opening the card.</p>
         <div class="modal-actions">
-          <button type="button" id="btn-reveal-card" class="btn btn-primary btn-lg">Mostra il mio obiettivo</button>
-          <button type="button" id="btn-cancel-shield" class="btn btn-ghost">Annulla</button>
+          <button type="button" id="btn-reveal-card" class="btn btn-primary btn-lg" data-i18n="btnShowObjective">Show my objective</button>
+          <button type="button" id="btn-cancel-shield" class="btn btn-ghost" data-i18n="btnCancel">Cancel</button>
         </div>
       </div>
 
       <div id="modal-card-step" class="modal-step hidden">
         <div class="modal-player-banner">
-          <span>Obiettivo di</span>
-          <strong id="modal-card-owner">Giocatore</strong>
+          <span data-i18n="modalObjectiveOf">Objective of</span>
+          <strong id="modal-card-owner">Player</strong>
         </div>
         <div id="modal-card-slot" class="objective-card-wrapper"></div>
         <div class="modal-actions">
-          <button type="button" id="btn-hide-card" class="btn btn-primary btn-lg">Nascondi e chiudi</button>
+          <button type="button" id="btn-hide-card" class="btn btn-primary btn-lg" data-i18n="btnHideAndClose">Hide and close</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: PERSONALIZZA COLORI SCATOLA -->
+  <!-- MODAL: CUSTOMIZE BOX COLORS -->
   <div id="colors-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="colors-modal-title">
     <div class="modal-dialog modal-dialog-wide">
-      <button type="button" id="colors-close-x" class="modal-close-x" aria-label="Chiudi">&times;</button>
-      <h2 id="colors-modal-title">Colori delle armate</h2>
-      <p class="muted">I colori classici sono Rosso, Blu, Giallo, Nero, Verde e Viola. Se la tua edizione usa colori diversi, puoi cambiarli qui.</p>
+      <button type="button" id="colors-close-x" class="modal-close-x" aria-label="Close">&times;</button>
+      <h2 id="colors-modal-title" data-i18n="colorsModalTitle">Army colors</h2>
+      <p class="muted" data-i18n="colorsModalSubtitle">Classic colors are Red, Blue, Yellow, Black, Green, and Purple. If your edition uses different colors, customize them here.</p>
 
       <div id="colors-editor-list" class="colors-editor-list"></div>
 
       <div class="modal-actions modal-actions-row">
-        <button type="button" id="btn-reset-colors" class="btn btn-ghost">Ripristina classici</button>
-        <button type="button" id="btn-save-colors" class="btn btn-primary">Salva colori</button>
+        <button type="button" id="btn-reset-colors" class="btn btn-ghost" data-i18n="btnResetColors">Reset classic</button>
+        <button type="button" id="btn-save-colors" class="btn btn-primary" data-i18n="btnSaveColors">Save colors</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: CONFERMA AZIONE -->
+  <!-- MODAL: CONFIRM ACTION -->
   <div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
     <div class="modal-dialog">
-      <h2 id="confirm-title">Conferma</h2>
+      <h2 id="confirm-title" data-i18n="confirmTitleDefault">Confirm</h2>
       <p id="confirm-message" class="muted"></p>
       <div class="modal-actions modal-actions-row">
-        <button type="button" id="btn-confirm-cancel" class="btn btn-ghost">Annulla</button>
-        <button type="button" id="btn-confirm-ok" class="btn btn-primary">Conferma</button>
+        <button type="button" id="btn-confirm-cancel" class="btn btn-ghost" data-i18n="btnCancel">Cancel</button>
+        <button type="button" id="btn-confirm-ok" class="btn btn-primary" data-i18n="btnConfirmOk">Confirm</button>
       </div>
     </div>
   </div>

@@ -12,7 +12,10 @@ export class CatalogView {
   }
 
   render(): void {
-    const deck = buildClassicDeck(this.store.getState().armyColors);
-    this.catalogGridEl.innerHTML = deck.map((card) => renderObjectiveCardHtml(card)).join('');
+    const state = this.store.getState();
+    const deck = buildClassicDeck(state.armyColors, state.lang);
+    this.catalogGridEl.innerHTML = deck
+      .map((card) => renderObjectiveCardHtml(card, null, state.lang, state.armyColors))
+      .join('');
   }
 }

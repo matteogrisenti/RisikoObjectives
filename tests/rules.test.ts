@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ARMY_COLORS, buildClassicDeck } from '../src/domain/objectives.ts';
 import { dealMatchObjectives, resolveEffectiveObjective } from '../src/domain/rules.ts';
+import { isDefaultPlayerName } from '../src/i18n/translations.ts';
 
 describe('resolveEffectiveObjective', () => {
-  const deck = buildClassicDeck(DEFAULT_ARMY_COLORS);
+  const deck = buildClassicDeck(DEFAULT_ARMY_COLORS, 'en');
   const destroyRed = deck.find((c) => c.id === 'destroy-red')!;
   const destroyBlue = deck.find((c) => c.id === 'destroy-blue')!;
   const terr18 = deck.find((c) => c.id === 'terr-18-2')!;
@@ -12,33 +13,48 @@ describe('resolveEffectiveObjective', () => {
     const res = resolveEffectiveObjective(
       terr18,
       { name: 'Marco', colorId: 'red' },
-      [{ name: 'Marco', colorId: 'red', eliminated: false }]
+      [{ name: 'Marco', colorId: 'red', eliminated: false }],
+      'en'
     );
     expect(res.isFallback).toBe(false);
     expect(res.reason).toBeNull();
   });
 
-  it('falls back to 24 territories when drawing own color', () => {
-    const res = resolveEffectiveObjective(
+  it('falls back to 24 territories when drawing own color (EN & IT)', () => {
+    const enRes = resolveEffectiveObjective(
       destroyRed,
       { name: 'Marco', colorId: 'red' },
       [
         { name: 'Marco', colorId: 'red', eliminated: false },
         { name: 'Luca', colorId: 'blue', eliminated: false }
-      ]
+      ],
+      'en'
     );
-    expect(res.isFallback).toBe(true);
-    expect(res.reason).toContain('tuo stesso colore');
+    expect(enRes.isFallback).toBe(true);
+    expect(enRes.reason).toContain('your own color');
+
+    const itRes = resolveEffectiveObjective(
+      destroyRed,
+      { name: 'Marco', colorId: 'red' },
+      [
+        { name: 'Marco', colorId: 'red', eliminated: false },
+        { name: 'Luca', colorId: 'blue', eliminated: false }
+      ],
+      'it'
+    );
+    expect(itRes.isFallback).toBe(true);
+    expect(itRes.reason).toContain('tuo stesso colore');
   });
 
   it('falls back to 24 territories when target color is not in match', () => {
     const res = resolveEffectiveObjective(
       destroyBlue,
       { name: 'Marco', colorId: 'red' },
-      [{ name: 'Marco', colorId: 'red', eliminated: false }]
+      [{ name: 'Marco', colorId: 'red', eliminated: false }],
+      'en'
     );
     expect(res.isFallback).toBe(true);
-    expect(res.reason).toContain('non sono in gioco');
+    expect(res.reason).toContain('not in this match');
   });
 
   it('falls back to 24 territories when target player is marked eliminated', () => {
@@ -48,10 +64,11 @@ describe('resolveEffectiveObjective', () => {
       [
         { name: 'Marco', colorId: 'red', eliminated: false },
         { name: 'Luca', colorId: 'blue', eliminated: true }
-      ]
+      ],
+      'en'
     );
     expect(res.isFallback).toBe(true);
-    expect(res.reason).toContain('eliminate');
+    expect(res.reason).toContain('already eliminated');
   });
 
   it('keeps destroy objective when target opponent is active', () => {
@@ -61,7 +78,8 @@ describe('resolveEffectiveObjective', () => {
       [
         { name: 'Marco', colorId: 'red', eliminated: false },
         { name: 'Luca', colorId: 'blue', eliminated: false }
-      ]
+      ],
+      'en'
     );
     expect(res.isFallback).toBe(false);
   });
@@ -103,5 +121,14 @@ describe('dealMatchObjectives', () => {
         );
       }
     }
+  });
+});
+
+describe('i18n helpers', () => {
+  it('identifies default player names in both English and Italian', () => {
+    expect(isDefaultPlayerName('Player 1', 0)).toBe(true);
+    expect(isDefaultPlayerName('Giocatore 1', 0)).toBe(true);
+    expect(isDefaultPlayerName('', 0)).toBe(true);
+    expect(isDefaultPlayerName('Marco', 0)).toBe(false);
   });
 });

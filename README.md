@@ -17,14 +17,17 @@ Web app modulare in TypeScript + Vite per gestire l'estrazione del mazzo classic
 │   │   ├── types.ts            # Modelli e interfacce TypeScript
 │   │   ├── objectives.ts       # Mazzo tradizionale da 14 carte + colori scatola
 │   │   └── rules.ts            # Regola di riserva (24 territori) e distribuzione
+│   ├── i18n/
+│   │   └── translations.ts     # Traduzioni EN (default) / IT e localizzazione carte
 │   ├── state/
 │   │   └── store.ts            # Store centralizzato con persistenza localStorage
 │   ├── styles/
-│   │   └── main.css            # Design system e carte stile pergamena
+│   │   └── main.css            # Design system chiaro ispirato alle plance classiche
 │   └── ui/                     # Componenti UI modulari
 │       ├── cardRenderer.ts
 │       ├── catalogView.ts
 │       ├── icons.ts
+│       ├── languageSwitch.ts
 │       ├── matchView.ts
 │       ├── modals.ts
 │       ├── quickDeckView.ts

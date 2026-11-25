@@ -1,3 +1,4 @@
+import { getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
 import { renderObjectiveCardHtml } from './cardRenderer.ts';
 import {
@@ -43,31 +44,36 @@ export class QuickDeckView {
   }
 
   render(): void {
-    const qd = this.store.getState().quickDeck;
+    const state = this.store.getState();
+    const strings = getStrings(state.lang);
+    const qd = state.quickDeck;
     const remaining = qd.cards.length;
     this.quickRemainingEl.textContent = String(remaining);
 
     this.quickDrawnInfoEl.textContent =
       qd.drawnCount === 0
-        ? 'Nessuna carta pescata.'
-        : `Pescate finora: ${qd.drawnCount} su 14`;
+        ? strings.quickNoneDrawn
+        : strings.quickDrawnCount(qd.drawnCount);
 
     if (qd.currentCard) {
       this.quickCardBackEl.classList.add('hidden');
       this.quickCardRevealedEl.classList.remove('hidden');
-      this.quickCardSlotEl.innerHTML = renderObjectiveCardHtml(qd.currentCard);
+      this.quickCardSlotEl.innerHTML = renderObjectiveCardHtml(
+        qd.currentCard,
+        null,
+        state.lang,
+        state.armyColors
+      );
     } else {
       this.quickCardBackEl.classList.remove('hidden');
       this.quickCardRevealedEl.classList.add('hidden');
       this.quickCardSlotEl.innerHTML = '';
 
       if (remaining === 0) {
-        this.quickBackHintEl.textContent =
-          'Tutte le 14 carte sono state pescate. Rimescola per ricominciare.';
+        this.quickBackHintEl.textContent = strings.quickHintEmpty;
         this.btnQuickDraw.disabled = true;
       } else {
-        this.quickBackHintEl.textContent =
-          'Tocca il pulsante per pescare la prossima carta segreta.';
+        this.quickBackHintEl.textContent = strings.quickHintReady;
         this.btnQuickDraw.disabled = false;
       }
     }

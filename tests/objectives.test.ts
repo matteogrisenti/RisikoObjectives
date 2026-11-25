@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_ARMY_COLORS,
   buildClassicDeck,
+  resolveColorKey,
   shuffleArray
 } from '../src/domain/objectives.ts';
 
@@ -18,19 +19,34 @@ describe('buildClassicDeck', () => {
     expect(deck.filter((c) => c.type === 'destroy')).toHaveLength(6);
   });
 
+  it('uses English by default and supports Italian localization', () => {
+    const enDeck = buildClassicDeck(DEFAULT_ARMY_COLORS, 'en');
+    const enRed = enDeck.find((c) => c.id === 'destroy-red');
+    expect(enRed?.text).toBe('Destroy all Red armies.');
+
+    const itDeck = buildClassicDeck(DEFAULT_ARMY_COLORS, 'it');
+    const itRed = itDeck.find((c) => c.id === 'destroy-red');
+    expect(itRed?.text).toBe('Devi distruggere completamente le armate Rosse.');
+  });
+
   it('uses custom box colors when provided', () => {
     const customColors = DEFAULT_ARMY_COLORS.map((c, idx) =>
       idx === 5
-        ? { id: c.id, name: 'Arancione', adjective: 'Arancioni', hex: '#dd6b20' }
+        ? { id: c.id, key: 'orange' as const, name: 'Orange', adjective: 'Orange', hex: '#D96B27' }
         : c
     );
-    const deck = buildClassicDeck(customColors);
-    const orangeCard = deck.find((c) => c.id === 'destroy-purple');
+    const itDeck = buildClassicDeck(customColors, 'it');
+    const orangeCard = itDeck.find((c) => c.id === 'destroy-purple');
     expect(orangeCard?.type).toBe('destroy');
     if (orangeCard?.type === 'destroy') {
       expect(orangeCard.targetColorAdjective).toBe('Arancioni');
-      expect(orangeCard.targetColorHex).toBe('#dd6b20');
+      expect(orangeCard.targetColorHex).toBe('#D96B27');
     }
+  });
+
+  it('resolves ColorKey cleanly from legacy color entries', () => {
+    expect(resolveColorKey({ id: 'purple', name: 'Viola', hex: '#7A54A8' })).toBe('purple');
+    expect(resolveColorKey({ id: 'custom', name: 'Arancione', hex: '#D96B27' })).toBe('orange');
   });
 });
 

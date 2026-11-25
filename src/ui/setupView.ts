@@ -1,4 +1,5 @@
 import type { DeckMode } from '../domain/types.ts';
+import { getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
 import { escapeHtml, getRequiredElement } from './icons.ts';
 import type { ModalController } from './modals.ts';
@@ -45,6 +46,7 @@ export class SetupView {
 
   render(): void {
     const state = this.store.getState();
+    const strings = getStrings(state.lang);
     const isVisible = state.activeMatch === null;
     this.setupViewEl.classList.toggle('hidden', !isVisible);
     if (!isVisible) return;
@@ -59,15 +61,15 @@ export class SetupView {
 
     this.playersSetupList.innerHTML = '';
     state.setupPlayers.slice(0, state.playerCount).forEach((player, idx) => {
-      const currentColor = this.store.getColorById(player.colorId);
+      const currentColor = this.store.getLocalizedArmyColor(player.colorId);
       const row = document.createElement('div');
       row.className = 'player-setup-row';
 
       const optionsHtml = state.armyColors
-        .map(
-          (c) =>
-            `<option value="${escapeHtml(c.id)}" ${c.id === player.colorId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`
-        )
+        .map((c) => {
+          const localized = this.store.getLocalizedArmyColor(c.id);
+          return `<option value="${escapeHtml(c.id)}" ${c.id === player.colorId ? 'selected' : ''}>${escapeHtml(localized.name)}</option>`;
+        })
         .join('');
 
       row.innerHTML = `
@@ -77,12 +79,12 @@ export class SetupView {
           class="player-name-input"
           value="${escapeHtml(player.name)}"
           maxlength="24"
-          placeholder="Giocatore ${idx + 1}"
-          aria-label="Nome giocatore ${idx + 1}"
+          placeholder="${escapeHtml(strings.playerDefaultName(idx + 1))}"
+          aria-label="${escapeHtml(strings.playerNameAria(idx + 1))}"
         >
         <div class="color-select-wrap">
           <span class="color-dot" style="background:${currentColor.hex}"></span>
-          <select class="color-select" aria-label="Colore armata giocatore ${idx + 1}">
+          <select class="color-select" aria-label="${escapeHtml(strings.playerColorAria(idx + 1))}">
             ${optionsHtml}
           </select>
         </div>

@@ -1,5 +1,6 @@
 import { COLOR_PRESET_PALETTE, DEFAULT_ARMY_COLORS } from '../domain/objectives.ts';
 import { resolveEffectiveObjective } from '../domain/rules.ts';
+import { getLocalizedColor, getStrings } from '../i18n/translations.ts';
 import type { AppStore } from '../state/store.ts';
 import { renderObjectiveCardHtml } from './cardRenderer.ts';
 import { escapeHtml, getRequiredElement } from './icons.ts';
@@ -41,16 +42,28 @@ export class ModalController {
 
   private bindEvents(): void {
     this.btnRevealCard.addEventListener('click', () => {
-      const match = this.store.getState().activeMatch;
+      const state = this.store.getState();
+      const match = state.activeMatch;
       if (this.activeModalPlayerIndex === null || !match) return;
       const player = match.players[this.activeModalPlayerIndex];
       if (!player) return;
 
-      const fallbackInfo = resolveEffectiveObjective(player.objective, player, match.players);
+      const fallbackInfo = resolveEffectiveObjective(
+        player.objective,
+        player,
+        match.players,
+        state.lang,
+        state.armyColors
+      );
       this.store.markPlayerObjectiveSeen(this.activeModalPlayerIndex);
 
       this.modalCardOwner.textContent = player.name;
-      this.modalCardSlot.innerHTML = renderObjectiveCardHtml(player.objective, fallbackInfo);
+      this.modalCardSlot.innerHTML = renderObjectiveCardHtml(
+        player.objective,
+        fallbackInfo,
+        state.lang,
+        state.armyColors
+      );
       this.modalShieldStep.classList.add('hidden');
       this.modalCardStep.classList.remove('hidden');
     });
@@ -66,20 +79,25 @@ export class ModalController {
     });
 
     this.btnSaveColors.addEventListener('click', () => {
+      const state = this.store.getState();
+      const strings = getStrings(state.lang);
       const selects = this.colorsEditorList.querySelectorAll('select');
-      const chosenNames = Array.from(selects).map((s) => s.value);
-      if (new Set(chosenNames).size !== 6) {
-        alert('Seleziona 6 colori diversi per evitare carte duplicate nel mazzo.');
+      const chosenKeys = Array.from(selects).map((s) => s.value);
+
+      if (new Set(chosenKeys).size !== 6) {
+        alert(strings.duplicateColorsAlert);
         return;
       }
 
-      const nextColors = chosenNames.map((name, idx) => {
+      const nextColors = chosenKeys.map((key, idx) => {
         const preset =
-          COLOR_PRESET_PALETTE.find((p) => p.name === name) ?? DEFAULT_ARMY_COLORS[idx];
+          COLOR_PRESET_PALETTE.find((p) => p.key === key) ?? COLOR_PRESET_PALETTE[idx];
+        const localized = getLocalizedColor(preset.key, state.lang);
         return {
           id: DEFAULT_ARMY_COLORS[idx].id,
-          name: preset.name,
-          adjective: preset.adjective,
+          key: preset.key,
+          name: localized.name,
+          adjective: localized.adjective,
           hex: preset.hex
         };
       });
@@ -113,18 +131,20 @@ export class ModalController {
   }
 
   openObjectiveModal(playerIdx: number): void {
-    const match = this.store.getState().activeMatch;
+    const state = this.store.getState();
+    const match = state.activeMatch;
     if (!match) return;
     const player = match.players[playerIdx];
     if (!player) return;
 
+    const strings = getStrings(state.lang);
     this.activeModalPlayerIndex = playerIdx;
-    const color = this.store.getColorById(player.colorId);
+    const color = this.store.getLocalizedArmyColor(player.colorId);
 
     this.modalPlayerTitle.textContent = player.name;
     this.modalPlayerColorPill.innerHTML = `
       <span class="color-dot" style="background:${color.hex}"></span>
-      <span>Armate ${escapeHtml(color.adjective)}</span>
+      <span>${escapeHtml(strings.playerArmies(color.adjective))}</span>
     `;
 
     this.modalShieldStep.classList.remove('hidden');
@@ -139,21 +159,24 @@ export class ModalController {
   }
 
   openColorsModal(): void {
-    const { armyColors } = this.store.getState();
+    const state = this.store.getState();
+    const strings = getStrings(state.lang);
     this.colorsEditorList.innerHTML = '';
 
-    armyColors.forEach((color, idx) => {
+    state.armyColors.forEach((color, idx) => {
+      const localizedCurrent = this.store.getLocalizedArmyColor(color.id);
       const item = document.createElement('div');
       item.className = 'color-editor-item';
 
       const options = COLOR_PRESET_PALETTE.map((preset) => {
-        const selected = preset.name === color.name ? 'selected' : '';
-        return `<option value="${escapeHtml(preset.name)}" ${selected}>${escapeHtml(preset.name)}</option>`;
+        const label = getLocalizedColor(preset.key, state.lang).name;
+        const selected = preset.key === localizedCurrent.key ? 'selected' : '';
+        return `<option value="${escapeHtml(preset.key)}" ${selected}>${escapeHtml(label)}</option>`;
       }).join('');
 
       item.innerHTML = `
         <span class="color-dot" style="background:${color.hex}; width:18px; height:18px;"></span>
-        <span>Colore ${idx + 1}</span>
+        <span>${escapeHtml(strings.colorSlotLabel(idx + 1))}</span>
         <select data-slot="${idx}">${options}</select>
       `;
 
@@ -161,7 +184,7 @@ export class ModalController {
       const dot = item.querySelector<HTMLElement>('.color-dot');
       sel?.addEventListener('change', (e) => {
         const chosen = COLOR_PRESET_PALETTE.find(
-          (p) => p.name === (e.target as HTMLSelectElement).value
+          (p) => p.key === (e.target as HTMLSelectElement).value
         );
         if (chosen && dot) dot.style.background = chosen.hex;
       });
